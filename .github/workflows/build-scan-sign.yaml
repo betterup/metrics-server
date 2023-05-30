@@ -21,14 +21,6 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Set up Go
-        uses: actions/setup-go@v4
-        with:
-          go-version: '1.20.4'
-
-      - name: Build
-        run: REGISTRY=ghcr.io/betterup make
-
       - name: Build and push Docker image
         uses: docker/build-push-action@v2
         with:
@@ -37,6 +29,8 @@ jobs:
           tags: ghcr.io/${{ env.IMAGE_NAME }}
           build-args: |
             ARCH=amd64
+            GIT_COMMIT=${{ github.sha }}
+            GIT_TAG=v0.6.3
 
       - name: Prisma Cloud image scan
         id: scan
